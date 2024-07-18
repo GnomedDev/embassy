@@ -4,7 +4,7 @@ use heapless::Vec;
 
 /// Utility struct to register and wake multiple wakers.
 pub struct MultiWakerRegistration<const N: usize> {
-    wakers: Vec<Waker, N>,
+    wakers: Vec<Waker, N, u8>,
 }
 
 impl<const N: usize> MultiWakerRegistration<N> {
@@ -50,7 +50,7 @@ impl<const N: usize> MultiWakerRegistration<N> {
 
         for i in 0..len {
             // Move a waker out of the vec.
-            let waker = unsafe { self.wakers.as_mut_ptr().add(i).read() };
+            let waker = unsafe { self.wakers.as_mut_ptr().add(i.into()).read() };
             // Wake it by value, which consumes (drops) it.
             waker.wake();
         }
